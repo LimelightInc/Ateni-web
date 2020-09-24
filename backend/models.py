@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 
 class User(AbstractUser):
-    authorizaton_token = models.TextField()
+    authorization_token = models.TextField()
     refresh_token = models.TextField()
 
 
