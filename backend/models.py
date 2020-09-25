@@ -1,12 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
-
-class User(AbstractUser):
-    authorization_token = models.TextField()
-    refresh_token = models.TextField()
 
 
 class Interest(models.Model):
@@ -35,13 +30,13 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class InnerCircle(models.Model):
-    contacts = models.ManyToManyField(Profile, related_name='contact')
+    contacts = models.ManyToManyField(Profile, related_name='contacts')
     current_user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='current_user')
 
 
 
 class Mowiki(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ManyToManyField(User)
     editor = models.ForeignKey(InnerCircle, on_delete=models.CASCADE)
     content = models.TextField()
     date_uploaded = models.DateTimeField(auto_now_add=True)
