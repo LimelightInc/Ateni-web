@@ -126,4 +126,5 @@ migrations/
 
 # image folders
 avatars/
+community_profile/
 media/
