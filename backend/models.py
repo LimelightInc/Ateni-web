@@ -1,16 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-
-class User(AbstractUser):
-    authorization_token = models.TextField()
-    refresh_token = models.TextField()
+from django.contrib.auth.models import User
 
 
 class Interest(models.Model):
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Profile(models.Model):
@@ -23,22 +19,13 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username}'
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-
 
 class InnerCircle(models.Model):
-    contacts = models.ManyToManyField(Profile, related_name='contact')
-    current_user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='current_user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    contacts = models.ForeignKey(Profile, on_delete=models.CASCADE)
 
-
+    def __str__(self):
+        return f"{self.user}'s circle"
 
 class Mowiki(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -46,6 +33,14 @@ class Mowiki(models.Model):
     content = models.TextField()
     date_uploaded = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.user}'s wiki"
+
+class Level(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Community(models.Model):
@@ -54,26 +49,26 @@ class Community(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     interest = models.ManyToManyField(Interest)
-    CHOICES = ( #level choices
-        ('beginner', 'Beginner friendly'),
-        ('intermediate', 'Intermediate'),
-        ('expert', 'Expert'),
-    )
-    level = models.CharField(max_length=255 ,choices=CHOICES)
+    level = models.ForeignKey(Level, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return f'{self.name}'
 
 class Project(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
     live_link = models.URLField(null=True)
     repo_link = models.URLField(null=True)
+    name = models.CharField(max_length=255)
     description = models.TextField()
-    deadline = models.DateField()
+    deadline = models.DateField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     is_open_source = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
     needs_contrib = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f'{self.name}'
 
 class Comment(models.Model):
     post = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -81,9 +76,15 @@ class Comment(models.Model):
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f'Comment by {self.user.username}'
+
 
 class SubComment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Sub-comment by {self.user.username}'
