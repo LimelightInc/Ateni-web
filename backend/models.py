@@ -1,5 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+    password = models.CharField(max_length=128, null=True)
+
+    def __str__(self):
+        return f'{self.email}'
 
 
 class Interest(models.Model):
@@ -88,3 +94,12 @@ class SubComment(models.Model):
 
     def __str__(self):
         return f'Sub-comment by {self.user.username}'
+
+
+class Client(models.Model):
+    name = models.CharField(max_length=100)
+    identifier = models.CharField(max_length=500)
+
+    def __str__(self):
+        return f'Client Identifier {self.identifier}'
+

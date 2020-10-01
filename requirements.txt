@@ -1,8 +1,8 @@
-asgiref==3.2.10
-Django==3.1.1
-djangorestframework==3.11.1
-Pillow==7.2.0
-psycopg2==2.8.6
-python-decouple==3.3
+click==7.1.2
+Django==1.11
+dominate==2.5.1
+Flask-Script==2.0.6
+itsdangerous==1.1.0
+MarkupSafe==1.1.1
 pytz==2020.1
-sqlparse==0.3.1
+visitor==0.1.3
