@@ -1,1 +1,1 @@
-web: gunicorn Drumstick.wsgi --log-file -
+web: gunicorn Drumstick.wsgi
