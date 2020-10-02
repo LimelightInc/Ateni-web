@@ -10,11 +10,17 @@ import jwt
 from backend.Api.v1.serializers import UserLoginSerializer, UserSignupSerializer
 from backend.models import User
 from Authentication import authenticate_user_by_email_and_password, signup_with_email_and_password
-from Decorators import allowed_client
+from Decorators import allowed_client, is_logged_in
 
 
 #TODO: Make custom decorator to check login and client_id
 class LoginView(APIView):
+
+    @method_decorator(is_logged_in())
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserLoginSerializer(users, many=True)
+        return Response(serializer.data)
 
     @method_decorator(allowed_client())
     def post(self, request):

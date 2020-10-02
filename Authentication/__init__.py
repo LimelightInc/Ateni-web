@@ -4,6 +4,8 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 
 import jwt
+import datetime
+from jwt import ExpiredSignatureError
 
 from Authentication import social 
 from backend.models import Client
@@ -43,7 +45,13 @@ def authenticate_user_by_google(google_client_token):
 def generate_auth_token(user_id):
     PRIVATE_KEY = getattr(settings, "PRIVATE_KEY")
     PRIVATE_KEY = serialization.load_pem_private_key(PRIVATE_KEY.encode(), password=None, backend=default_backend())
-    return jwt.encode({'user_id': user_id}, PRIVATE_KEY, algorithm='RS256' ).decode('utf-8')
+    payload = {
+        'user_id': user_id,
+        'iat': datetime.datetime.utcnow(),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30)
+        
+    }
+    return jwt.encode(payload, PRIVATE_KEY, algorithm='RS256' ).decode('utf-8')
     
 def check_if_user_exists(email):
     if User.objects.filter(email = email).exists():
@@ -91,3 +99,25 @@ def create_user_account(username, email, password):
         return new_user.id
     return False
 
+def decode_auth_token(auth_token):
+    PUBLIC_KEY = getattr(settings, "PUBLIC_KEY")
+    PUBLIC_KEY = serialization.load_pem_public_key(PUBLIC_KEY.encode(), backend=default_backend())
+    try:
+        return jwt.decode(auth_token, PUBLIC_KEY, algorithms=['RS256'])
+    except ExpiredSignatureError as exp:
+        return {'status': 'Failed', 'message': exp}
+
+def verify_user_from_token(auth_token):
+    try:
+        decoded_token = decode_auth_token(auth_token)
+        
+        if decoded_token['user_id']:
+            return True
+        else:
+            print('Failed at else')
+            return False
+
+    except Exception as e:
+        print('Failed at exception')
+        print(e)
+        return False

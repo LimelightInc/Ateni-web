@@ -2,7 +2,7 @@ from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
 
-from Authentication import get_all_clients
+from Authentication import get_all_clients, verify_user_from_token
 
 def allowed_client():
     def decorator(function):
@@ -12,5 +12,18 @@ def allowed_client():
                 return function(request, *args, **kwargs)
             else:
                 return Response({'status':'Failed', 'message': 'Client not authorized.'}, status=status.HTTP_403_FORBIDDEN)
+        return wrapper
+    return decorator
+
+
+def is_logged_in():
+    def decorator(function):
+        def wrapper(request, *args, **kwargs):
+            user_token = request.data.get('token')
+            if verify_user_from_token(user_token):
+                return function(request, *args, **kwargs)
+            else:
+                print(verify_user_from_token(user_token))
+                return Response({'status':'Failed', 'message': 'Not valid token. Please sign in again'}, status=status.HTTP_403_FORBIDDEN)
         return wrapper
     return decorator
