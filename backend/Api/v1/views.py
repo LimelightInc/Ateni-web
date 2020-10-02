@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.conf import settings
+from django.conf import settings    
+from django.utils.decorators import method_decorator
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 import jwt
@@ -9,12 +10,13 @@ import jwt
 from backend.Api.v1.serializers import UserLoginSerializer, UserSignupSerializer
 from backend.models import User
 from Authentication import authenticate_user_by_email_and_password, signup_with_email_and_password
+from Decorators import allowed_client
 
+
+#TODO: Make custom decorator to check login and client_id
 class LoginView(APIView):
-    # def get(self, request):
-    #     users = User.objects.all()
-    #     serializer = UserSerializer(users, many=True)
-    #     return Response(serializer.data)
+
+    @method_decorator(allowed_client())
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if request.data.get('email') and request.data.get('password'):
@@ -31,6 +33,8 @@ class LoginView(APIView):
 
 
 class SignupView(APIView):
+
+    @method_decorator(allowed_client())
     def post(self, request):
         serializer = UserSignupSerializer(data=request.data)
         if request.data.get('email') and request.data.get('password') and request.data.get('username'):

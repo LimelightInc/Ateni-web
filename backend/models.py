@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import django.contrib.auth.validators
 
 class User(AbstractUser):
     password = models.CharField(max_length=128, null=True)

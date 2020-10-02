@@ -59,6 +59,7 @@ def get_all_clients():
     client_list = []
     for client in Client.objects.all():
         client_list.append(client.identifier)
+    return client_list
 
 def verify_user(email, password):
     user = User.objects.filter(email=email).first()
