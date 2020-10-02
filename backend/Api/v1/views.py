@@ -6,9 +6,9 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 import jwt
 
-from backend.Api.v1.serializers import UserSerializer
+from backend.Api.v1.serializers import UserLoginSerializer, UserSignupSerializer
 from backend.models import User
-from Authentication import authenticate_user_by_email_and_password
+from Authentication import authenticate_user_by_email_and_password, signup_with_email_and_password
 
 class LoginView(APIView):
     # def get(self, request):
@@ -16,7 +16,7 @@ class LoginView(APIView):
     #     serializer = UserSerializer(users, many=True)
     #     return Response(serializer.data)
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = UserLoginSerializer(data=request.data)
         if request.data.get('email') and request.data.get('password'):
             if serializer.is_valid():    
                 email = request.data.get('email') 
@@ -27,4 +27,21 @@ class LoginView(APIView):
                 return Response(auth_user, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'status': 'Failed', 'message': 'Wrong data format passed'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({'status': 'Failed', 'message':'Not provided all required info.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignupView(APIView):
+    def post(self, request):
+        serializer = UserSignupSerializer(data=request.data)
+        if request.data.get('email') and request.data.get('password') and request.data.get('username'):
+            if serializer.is_valid():    
+                email = request.data.get('email') 
+                password = request.data.get('password')
+                username = request.data.get('username')
+                auth_user= signup_with_email_and_password(username, email, password)
+                if auth_user['status'] == 'Success':
+                    return Response(auth_user, status=status.HTTP_201_CREATED)
+                return Response(auth_user, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'status': 'Failed', 'message': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'status': 'Failed', 'message':'Not provided all required info.'}, status=status.HTTP_400_BAD_REQUEST)
