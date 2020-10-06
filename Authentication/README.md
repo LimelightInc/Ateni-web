@@ -4,12 +4,12 @@
 For starters Drumstick architecture is entirely decoupled. 
 * We have the backend server that handles all requests and exposed APIs to be consumed by clients.
 * We have clients consuming the exposed API's on the backend server.\
-For now, the clients we have are:\
+#### For now, the clients we have are:
  - A web application. (Check it here)
  - A cross-platform flutter application (Check it here)
 
 ## Requirements
-To understand how the Authentication works, you need to understand what it consists of.\
+To understand how the Authentication works, you need to understand what it consists of.
 1. Registered clients - For an application to consume our API's it has to be a registered Client\ 
 with a Client ID. (Follow this steps to obtain your client ID) 
 
@@ -19,7 +19,7 @@ We currently support 2 Authentication methods.
  2. Google Sign in (Read more) (NOT DONE)
 
 ### Email and Password Authentication
-Before using this authentication method, please ensure you have satisfied the Requirements section (Requirements section)\
+Before using this authentication method, please ensure you have satisfied the Requirements section (Requirements section)
 
 If you have. Let's proceed.
 
@@ -35,7 +35,7 @@ The required fields are:\
     "password": "A strong enough password",
     "client_id": "The client ID of the client making the request" 
 ```
-If any of these fields are missing or not correct, an error is thrown. (Please check here for more details)\
+If any of these fields are missing or not correct, an error is thrown. (Please check here for more details)
 
 If you want to jump straight to the responses section go here.
 
@@ -52,7 +52,7 @@ Finally the jwt token is returned to the client with the appropriate success cod
 
 That is the general flow of all the requests we expect on our server.
 
-IMOPRTANT\
+IMPORTANT\
 Just to reiterate, we require:
 1. All requests to protected routes to contain the Authorization token on the request header.
 2. All requests to contain valid client_id of the client from which the requests originates from.
