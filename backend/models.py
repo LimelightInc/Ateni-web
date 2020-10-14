@@ -28,11 +28,11 @@ class Profile(models.Model):
 
 
 class InnerCircle(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    contacts = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    contacts = models.ManyToManyField(Profile)
 
     def __str__(self):
-        return f"{self.user}'s circle"
+        return f"{self.user.username}'s circle"
 
 class Mowiki(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -52,7 +52,8 @@ class Level(models.Model):
 
 class Community(models.Model):
     admin = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='community_profile/', default='image.jpg')
+    logo = models.ImageField(upload_to='community_profile/', default='image.jpg')
+    cover_photo = models.ImageField(upload_to='community_covers/', default='cover.jpg')
     name = models.CharField(max_length=255)
     description = models.TextField()
     interest = models.ManyToManyField(Interest)
@@ -64,6 +65,7 @@ class Community(models.Model):
 class Project(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='projects_images/', null=True)
     live_link = models.URLField(null=True)
     repo_link = models.URLField(null=True)
     name = models.CharField(max_length=255)
@@ -84,7 +86,7 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Comment by {self.user.username}'
+        return f'Comment by {self.user.username} on {self.post.name}'
 
 
 class SubComment(models.Model):
@@ -94,7 +96,7 @@ class SubComment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Sub-comment by {self.user.username}'
+        return f'Sub-comment by {self.user.username} on {self.comment} '
 
 
 class Client(models.Model):
@@ -102,5 +104,4 @@ class Client(models.Model):
     identifier = models.CharField(max_length=500)
 
     def __str__(self):
-        return f'Client Identifier {self.identifier}'
-
+        return f'Client {self.name}'

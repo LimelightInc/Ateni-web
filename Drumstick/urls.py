@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
 from backend.Api.v1 import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/',include('backend.Api.v1.urls')),
-    path('api/login/', views.LoginView.as_view(), name = 'login_view'),
-    path('api/signup/', views.SignupView.as_view(), name = 'signup_view'),
+    path('api/v1/',include('backend.Api.v1.urls')),
+
+    # catch-all pattern for compatibility with the Angular routes
+    # url(r'^(?P<path>.*)/$', views.index),
 ]
