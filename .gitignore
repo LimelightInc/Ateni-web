@@ -122,3 +122,13 @@ dmypy.json
 .pyre/
 # migrations
 migrations/
+
+
+# image folders
+avatars/
+community_profile/
+media/
+
+
+#Private Key
+drumstick_private
