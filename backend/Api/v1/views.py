@@ -1,5 +1,6 @@
 from django.http import request
 from django.http import cookie
+from django.http.response import Http404
 from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,15 +16,14 @@ from backend.models import *
 from Authentication import authenticate_user_by_email_and_password, signup_with_email_and_password
 from Decorators import allowed_client, is_logged_in
 
-# from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FileUploadParser
+from rest_framework.decorators import action, api_view
+from rest_framework.reverse import reverse
+from rest_framework import viewsets
 
 
-# def index(request, path=''):
-#     """ Renders the Angular2 SPA """
-#     return render(request, 'index.html')
 
-
-#POST
+#Auth apis
 #TODO: Make custom decorator to check login and client_id
 class LoginView(APIView):
     @method_decorator(is_logged_in())
@@ -67,59 +67,57 @@ class SignupView(APIView):
 
 
 
-
-# GET
-class ProfileView(APIView):
-    def get(self, request):
-        users = Profile.objects.all()
-        serializer = UserProfileSerializer(users, many=True)
-        return Response(serializer.data)
+#Model apis #todo: MOWIKI
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    ''' viewset to automatically 'list' and 'detail' actions '''
+    queryset = User.objects.all()
+    serializer_class =  UserSerializer
 
 
-class InterestView(APIView):
-    def get(self, request):
-        users = Interest.objects.all()
-        serializer = InterestSerializer(users, many=True)
-        return Response(serializer.data)
+class ProfileViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = Profile.objects.all()
+    serializer_class =  UserProfileSerializer
+    # permission_classes
 
 
-class InnerCircleView(APIView):
-    def get(self, request):
-        users = InnerCircle.objects.all()
-        serializer = InnerCircleSerializer(users, many=True)
-        return Response(serializer.data)
+class InterestViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = Interest.objects.all()
+    serializer_class =  InterestSerializer
 
 
-class LevelView(APIView):
-    def get(self, request):
-        users = Level.objects.all()
-        serializer = LevelSerializer(users, many=True)
-        return Response(serializer.data)
+class InnerCircleViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = InnerCircle.objects.all()
+    serializer_class =  InnerCircleSerializer
 
 
-class CommunityView(APIView):
-    def get(self, request):
-        users = Community.objects.all()
-        serializer = CommunityDetailSerializer(users, many=True)
-        return Response(serializer.data)
+class LevelViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = Level.objects.all()
+    serializer_class =  LevelSerializer
 
 
-class ProjectView(APIView):
-    def get(self, request):
-        users = Project.objects.all()
-        serializer = ProjectDetailSerializer(users, many=True)
-        return Response(serializer.data)
+class CommunityViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = Community.objects.all()
+    serializer_class =  CommunityDetailSerializer
 
 
-class CommentView(APIView):
-    def get(self, request):
-        users = Comment.objects.all()
-        serializer = CommentDetailSerializer(users, many=True)
-        return Response(serializer.data)
+class ProjectViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = Project.objects.all()
+    serializer_class =  ProjectDetailSerializer
 
 
-class SubCommentView(APIView):
-    def get(self, request):
-        users = SubComment.objects.all()
-        serializer = SubCommentSerializer(users, many=True)
-        return Response(serializer.data)
+class CommentViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = Comment.objects.all()
+    serializer_class =  CommentDetailSerializer
+
+
+class SubCommentViewSet(viewsets.ModelViewSet):
+    ''' viewset to automatically 'list', 'create', 'retrieve', 'update', and 'destroy' actions '''
+    queryset = SubComment.objects.all()
+    serializer_class =  SubCommentSerializer

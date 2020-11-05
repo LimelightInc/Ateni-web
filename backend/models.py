@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import django.contrib.auth.validators
 
+
 class User(AbstractUser):
     password = models.CharField(max_length=128, null=True)
 
@@ -34,6 +35,7 @@ class InnerCircle(models.Model):
     def __str__(self):
         return f"{self.user.username}'s circle"
 
+
 class Mowiki(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     editor = models.ForeignKey(InnerCircle, on_delete=models.CASCADE)
@@ -42,6 +44,7 @@ class Mowiki(models.Model):
 
     def __str__(self):
         return f"{self.user}'s wiki"
+
 
 class Level(models.Model):
     name = models.CharField(max_length=255)
@@ -62,6 +65,7 @@ class Community(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
 class Project(models.Model):
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
@@ -78,6 +82,7 @@ class Project(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Project, on_delete=models.CASCADE)
