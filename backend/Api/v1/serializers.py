@@ -28,28 +28,25 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class InterestSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Interest
-        fields = ('id', 'name')
+        fields = ('__all__')
 
 
 class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
-        class Meta:
-            model = Profile
-            fields = ('user', 'image', 'twitter', 'linkedin', 'interest')
+    class Meta:
+        model = Profile
+        fields = ('__all__')
 
 
 class InnerCircleSerializer(serializers.HyperlinkedModelSerializer):
-    # user = UserSerializer()
-    # contacts = UserProfileSerializer(many=True)
-
     class Meta:
         model = InnerCircle
-        fields = ('user', 'contacts')
+        fields = ('__all__')
 
 
 class LevelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Level
-        fields = ('id', 'name')
+        fields = ('__all__')
 
 
 class CommunityDetailSerializer(serializers.HyperlinkedModelSerializer):
@@ -66,10 +63,10 @@ class ProjectDetailSerializer(serializers.HyperlinkedModelSerializer):
 class CommentDetailSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
-        fields = ('post', 'user', 'content', 'created')
+        fields = ('__all__')
 
 
 class SubCommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SubComment
-        fields = ('comment', 'user', 'content', 'created')
+        fields = ('__all__')
